@@ -17,6 +17,8 @@ async def cmd_help(message: types.Message):
 • /config <category> <summ> — set a budget
 • /log <+/-summ> <category> — record income/expense
 • /summary — show balance by categories
+• /notifyon — enable notifycations
+• /notifyoff — disable notifycations              
 """)
 
 @router.message(Command("config"))
@@ -76,33 +78,17 @@ async def cmd_summary(message: types.Message):
 @router.message(Command("notifyon"))
 async def cmd_notifyon(message: types.Message):
     try:
-        change_notification(message.from_user.id, 1)
-        await message.answer("🔔 Уведомления включены.")
+        change_notification(message.from_user.id, 1)  #обновляем настройку уведомлений в базе данных на "включено"
+        await message.answer("🔔 Notifications are enabled.")
     except Exception as e:
-        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
-        print(f"{e}")
+        await message.answer("There was a mistake.")
+        print(f"{e}") #выводится сообщение об ошибке если что то пошло не так
 
 @router.message(Command("notifyoff"))
 async def cmd_notifyoff(message: types.Message):
     try:
         change_notification(message.from_user.id, 0)
-        await message.answer("🔔 Уведомления отключены. Чепухня")
+        await message.answer("🔔 Notifications are disabled.")
     except Exception as e:
-        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
-        print(f"{e}")@router.message(Command("notifyon"))
-async def cmd_notifyon(message: types.Message):
-    try:
-        change_notification(message.from_user.id, 1)
-        await message.answer("🔔 Уведомления включены. Чепухня")
-    except Exception as e:
-        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
-        print(f"{e}")
-
-@router.message(Command("notifyoff"))
-async def cmd_notifyoff(message: types.Message):
-    try:
-        change_notification(message.from_user.id, 0)
-        await message.answer("🔔 Уведомления отключены. Чепухня")
-    except Exception as e:
-        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
+        await message.answer("An error has occurred.")
         print(f"{e}")
