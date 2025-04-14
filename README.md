@@ -8,6 +8,8 @@ Features:
 
 /start /help — greeting and list of commands
 
+/notifyon /notifyoff - enable and disable notifycations from bot
+
 >Automatic user creation at the first use
 
 >Storing data in SQLite
