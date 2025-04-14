@@ -1,7 +1,6 @@
 from aiogram import Router, types
 from aiogram.filters import Command #фильтр для команд 
-from db import set_budget, log_transaction, get_summary, add_user, check_current_balance, change_current_balance
-
+from db import set_budget, log_transaction, get_summary, add_user, check_current_balance, change_current_balance, change_notification
 router = Router() #обьект который собирает и регистрирует все обработчики команд
 
 @router.message(Command("start"))
@@ -73,3 +72,37 @@ async def cmd_summary(message: types.Message):
         lines.append(line)
 
     await message.answer("\n".join(lines))
+
+@router.message(Command("notifyon"))
+async def cmd_notifyon(message: types.Message):
+    try:
+        change_notification(message.from_user.id, 1)
+        await message.answer("🔔 Уведомления включены.")
+    except Exception as e:
+        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
+        print(f"{e}")
+
+@router.message(Command("notifyoff"))
+async def cmd_notifyoff(message: types.Message):
+    try:
+        change_notification(message.from_user.id, 0)
+        await message.answer("🔔 Уведомления отключены. Чепухня")
+    except Exception as e:
+        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
+        print(f"{e}")@router.message(Command("notifyon"))
+async def cmd_notifyon(message: types.Message):
+    try:
+        change_notification(message.from_user.id, 1)
+        await message.answer("🔔 Уведомления включены. Чепухня")
+    except Exception as e:
+        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
+        print(f"{e}")
+
+@router.message(Command("notifyoff"))
+async def cmd_notifyoff(message: types.Message):
+    try:
+        change_notification(message.from_user.id, 0)
+        await message.answer("🔔 Уведомления отключены. Чепухня")
+    except Exception as e:
+        await message.answer("Произощла ошибка, ты родился просто. Чепухня")
+        print(f"{e}")

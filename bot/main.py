@@ -1,16 +1,23 @@
-import asyncio # модуль для выполнения асинхронных задач 
-from aiogram import Bot, Dispatcher #бот - прямой канал связи с ботом, диспетчер - маршрутизатор 
+
+import asyncio
+from aiogram import Bot, Dispatcher
 from config import BOT_TOKEN
 from db import init_db
 from handlers import router
+from scheduler import scheduler, schedule_jobs  # импортируем планировщик
 
-init_db() #запуск функйии init.db что бы база данных была готова к исп.
+init_db()
 
-async def main(): #определяет функцию
+async def main():
     bot = Bot(token=BOT_TOKEN)
-    dp = Dispatcher() #создает распределитель всех входяхиъ сообщений
-    dp.include_router(router) #подключает все маршруты из handlers
-    await dp.start_polling(bot) #запуск бота и бесконечный цикл проверки входящих сообшений
+    dp = Dispatcher()
+
+    dp.include_router(router)
+
+    schedule_jobs(bot)         # запускаем задания
+    scheduler.start()          # стартуем планировщик
+
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    asyncio.run(main()) #запуск функции 
+    asyncio.run(main())

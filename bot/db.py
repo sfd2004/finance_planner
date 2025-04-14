@@ -1,6 +1,7 @@
 import sqlite3
 from config import DB_PATH
-from datetime import datetime
+from datetime import datetime, timedelta
+
 
 def init_db():
     with sqlite3.connect(DB_PATH) as conn: #подключаемся к базе данных
@@ -101,3 +102,39 @@ def get_summary(user_id: int):
         budgets = {row[0]: (row[1], row[2]) for row in budget_data}
         return budgets
 #выводит текущий баланс юзера и его запланированный бюджет 
+
+def change_notification(user_id: int, action: int):
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET notifications_enabled = ? WHERE user_id = ?", (action, user_id,))
+        conn.commit()
+
+def get_users_for_notifications():
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id FROM users WHERE notifications_enabled = 1")
+        return [row[0] for row in cursor.fetchall()]
+
+def get_daily_summary(user_id: int):
+    today = datetime.now().date().isoformat()
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT category, SUM(amount)
+            FROM logs
+            WHERE user_id = ? AND date(date) = ?
+            GROUP BY category
+        """, (user_id, today))
+        return cursor.fetchall()
+
+def get_weekly_summary(user_id: int):
+    start_date = (datetime.now() - timedelta(days=7)).date().isoformat()
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT category, SUM(amount)
+            FROM logs
+            WHERE user_id = ? AND date(date) >= ?
+            GROUP BY category
+        """, (user_id, start_date))
+        return cursor.fetchall()
