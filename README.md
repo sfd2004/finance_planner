@@ -1,3 +1,6 @@
+Finance Planner
+
+
 Features:
 
 /config — setting the budget by category
